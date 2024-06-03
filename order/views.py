@@ -1,4 +1,5 @@
 from rest_framework.views import APIView
+from django.shortcuts import render
 from rest_framework import status
 from rest_framework.response import Response
 from .models import GotOrder,DistributedOrder, Person
@@ -8,6 +9,7 @@ from django.shortcuts import get_object_or_404
 from django.db.models import Sum
 from .utils import check_got_qty
 from django.db.models import ProtectedError
+from company.models import Company
 
 # Create your views here.
 
@@ -29,11 +31,15 @@ class GotOrderView(APIView):
             order_by = serializer.validated_data['order_by']
             order_date = datetime.now()
             got_qty = serializer.validated_data['got_qty']
-
+            company = None
+            if serializer.validated_data.get('company_id'):
+                company_id = serializer.validated_data['company_id']
+                company = Company.objects.get(id=company_id)
             got_order = GotOrder.objects.create(
                 order_by = order_by,
                 order_date = order_date.date(),
                 got_qty = got_qty,
+                company = company
             )
             response = {
                 'data': GotOrderModelSerializer(got_order).data
@@ -53,6 +59,8 @@ class GotOrderDetailView(APIView):
             order.order_by = serializer.validated_data.get('order_by',order.order_by)
             order.complete_status = serializer.validated_data.get('complete_status',order.complete_status)
             order.got_qty = got_qty
+            company_id = serializer.validated_data.get('company_id',order.company.id)
+            order.company = Company.objects.get(id=company_id)
             order.save()
             response ={
                 'message':'Order have been Updated'

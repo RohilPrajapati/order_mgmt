@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import GotOrder,DistributedOrder,Person
 from django.db.models import Sum
+
 class GotOrderModelSerializer(serializers.ModelSerializer):
     dist_order = serializers.SerializerMethodField()
     dist_order_qty = serializers.SerializerMethodField()
@@ -11,6 +12,7 @@ class GotOrderModelSerializer(serializers.ModelSerializer):
     class Meta:
         model=GotOrder
         fields = '__all__'
+        depth = 1
     def get_dist_order(self,obj):
         dist_order = DistributedOrder.objects.filter(got_order = obj)
         serializer = DistributedOrderModelSerializer(dist_order,many=True)
@@ -46,6 +48,7 @@ class GotOrderCreateSerializer(serializers.Serializer):
     order_by = serializers.CharField()
     # order_date = serializers.DateField()
     got_qty = serializers.IntegerField()
+    company_id = serializers.IntegerField(required=False,allow_null=True)
     complete_status = serializers.BooleanField(required=False,allow_null=True)
     # remaining_qty = serializers.IntegerField()
     # distributed_qty = serializers.IntegerField()

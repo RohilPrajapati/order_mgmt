@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -25,7 +26,7 @@ SECRET_KEY = 'django-insecure-mg1hmmmb=9n7^d8itt6np8-^n9n=sxt5)qc6wt)@dy%@bweh&x
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -39,17 +40,18 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     # third party app
-    'rest_framework',
     'corsheaders',
+    'rest_framework',
 
     # local app
     'order',
+    'company',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -62,7 +64,7 @@ ROOT_URLCONF = 'order_mgmt.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR)],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -132,10 +134,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # cors setting
 
-CORS_ALLOW_ALL_ORIGINS: True
-CORS_ALLOWED_ORIGINS = [
-    'http://localhost:8080',
-]
+CORS_ORIGIN_ALLOW_ALL = True
 
 # for rest framework
 

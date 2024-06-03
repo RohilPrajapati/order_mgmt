@@ -1,8 +1,9 @@
 from django.db import models
-
+from company.models import Company
 # Create your models here.
 
 class GotOrder(models.Model):
+    company = models.ForeignKey(Company,on_delete=models.PROTECT,null=True)
     order_by = models.CharField(max_length=150)
     order_date = models.DateField()
     got_qty = models.IntegerField()
